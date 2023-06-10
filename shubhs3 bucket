@@ -1,0 +1,55 @@
+Steps:-                                  <----Mount S3 Bucket on EC2 Instance---->
+         (1) Launch instance on EC2 --> Name:- s3bucket-mount
+                                          key :- key100
+                                          By default setting  --> 
+                                          Launch Instance.
+        (2) Open IAM Service -->  Open Role -->  Create Role --> 
+                                                    Entity type:- AWS service
+                                                    Common use cases:- EC2  --> Next
+                                                    Permission Policy:- AmazonS3fullaccess --> Select --> Next
+                                                    Role name:- S3fullaccess  -->  Create Role.
+         (3) Open EC2 Instance (Attach Role to EC2 Instance) 
+            (4) Select instance  -->  Actions  -->  Security  -->  Modify IAM Role  -->
+                                                                    IAM Role:- S3fullaccess -->
+                                                                    update IAM Role.
+         (5) Open S3 Bucket Console -->
+                                            Create bucket --> name:- aws-grantee-user
+                                                              By default setting --> 
+                                                              Create.
+            (6) Copy Public IP of EC2 Instance name as Bucket-mount.
+            (7) Take SSH of Instance Using Mobaxterm.
+            (8) Open Mobaxterm app --> Session --> SSH -->
+                                                        ----> Hostname:- Public IP Paste of EC2 Instances.
+                                                        -----> username:- ec2-user
+                                                        -------> Private key:- Select path of newkey.pem file  --> 
+                                                        -----------> OK
+            (9) Commands :- 
+                            # sudo su
+                            # yum update -y
+	                    # yum install awscli -y
+		            # sudo yum install automake fuse fuse-devel gcc-c++ git libcurl-devel libxml2-devel make openssl-devel
+	                    # git clone https://github.com/s3fs-fuse/s3fs-fuse.git
+		            # cd s3fs-fuse
+                            # ls
+		            # ./autogen.sh
+		            # ./configure --prefix=/usr --with-openssl
+	                    # sudo make install
+	                    # which s3fs
+		            # touch /etc/passwd-s3fs
+		            # vim /etc/passwd-s3fs 
+		                    In that file enter access-key:secret-key and save it.
+		            # sudo chmod 600 /etc/passwd-s3fs
+		            # mkdir /Bucketmount01
+	                    # s3fs aws-grantee-user -o use_cache=/tmp -o uid=1001 -o mp_umask=002 /Bucketmount
+				 This is for Mounting.
+                            # df -hT    
+                            # ls
+                            # cd /Bucketmount01
+                            # ls
+                            # touch file1.txt
+                            # ls
+
+                            {successfull to process} in MobaXterm 
+             (10)  After that open S3 bucket console and open bucket the file1.txt is present in object section. 
+               
+               
